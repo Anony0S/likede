@@ -117,6 +117,7 @@ export default {
           { min: 4, max: 4, trigger: 'blur', message: '请输入四位验证码！' }
         ]
       },
+      // 按钮加载状态
       loading: false,
       passwordType: 'password',
       redirect: undefined,
@@ -148,15 +149,17 @@ export default {
         this.$refs.password.focus()
       })
     },
-    // TODO: 登录按钮
+    // 登录按钮
     async handleLogin() {
       try {
+        this.loading = true
         await this.$refs.loginForm.validate()
         await this.$store.dispatch('user/loginForm', {
           ...this.loginForm,
           clientToken: this.clientToken,
           loginType: 0
         })
+        this.loading = false
       } catch (error) {
         this.$message.error('登陆失败！')
         console.log(error)
