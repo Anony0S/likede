@@ -7,3 +7,11 @@ export const getImgCode = (clientToken) =>
     url: `/api/user-service/user/imageCode/${clientToken}`,
     responseType: 'arraybuffer'
   })
+
+// 登录
+export const login = (data) =>
+  request({
+    method: 'POST',
+    url: '/api/user-service/user/login',
+    data
+  })

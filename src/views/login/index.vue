@@ -14,13 +14,11 @@
         </h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="loginName">
         <span class="el-icon-mobile-phone" />
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.loginName"
           placeholder="请输入账号"
-          name="username"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -31,11 +29,9 @@
         <span class="el-icon-lock" />
         <el-input
           :key="passwordType"
-          ref="password"
           v-model="loginForm.password"
           :type="passwordType"
           placeholder="请输入密码"
-          name="password"
           tabindex="2"
           auto-complete="on"
           @keyup.enter.native="handleLogin"
@@ -48,18 +44,21 @@
       </el-form-item>
 
       <!-- 验证码 -->
-      <el-form-item prop="verification">
+      <el-form-item prop="code">
         <span class="el-icon-view" />
         <el-input
-          ref="verification"
-          v-model="loginForm.verification"
+          v-model="loginForm.code"
           placeholder="请输入验证码"
-          name="username"
           type="text"
           tabindex="1"
           auto-complete="on"
-        />
-        <img :src="imgURL" alt="">
+        >
+          <img
+            slot="suffix"
+            :src="imgURL"
+            style="height: 47px; margin-right: -30px"
+          >
+        </el-input>
       </el-form-item>
 
       <el-button
@@ -98,12 +97,12 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        loginName: 'admin',
         password: 'admin',
-        verification: ''
+        code: ''
       },
       loginRules: {
-        username: [
+        loginName: [
           { required: true, trigger: 'blur', message: '请填写用户民！' },
           { min: 5, max: 16, trigger: 'blur', message: '用户名为4-10位' },
           { validate: validateUsername, trigger: 'blur' }
@@ -113,15 +112,18 @@ export default {
           { min: 5, max: 16, trigger: 'blur', message: '用户名为4-10位' },
           { validate: validatePassword, trigger: 'blur' }
         ],
-        verification: [
-          { required: true, trigger: 'blur', message: '请填写验证码！' }
+        code: [
+          { required: true, trigger: 'blur', message: '请填写验证码！' },
+          { min: 4, max: 4, trigger: 'blur', message: '请输入四位验证码！' }
         ]
       },
       loading: false,
       passwordType: 'password',
       redirect: undefined,
       // 验证码图片链接
-      imgURL: ''
+      imgURL: '',
+      // 请求验证码Token
+      clientToken: 0
     }
   },
   watch: {
@@ -146,31 +148,31 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true
-          this.$store
-            .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            })
-            .catch(() => {
-              this.loading = false
-            })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    // TODO: 登录按钮
+    async handleLogin() {
+      try {
+        await this.$refs.loginForm.validate()
+        await this.$store.dispatch('loginForm', {
+          ...this.loginForm,
+          clientToken: this.clientToken,
+          loginType: 0
+        })
+        // const { success } = await login()
+        // if (success) {
+        //   this.$message.success('登录成功！')
+        //   this.$router.push('/')
+        // } else return this.$message.error('登录失败！')
+      } catch (error) {
+        this.$message.error('登陆失败！')
+        console.log(error)
+      }
     },
     // 获取图片验证码
     async getImgCode() {
-      const res = await getImgCode(Math.random())
-      console.log(res)
+      this.clientToken = Math.random()
+      const data = await getImgCode(this.clientToken)
       // 获取图片地址
-      const blob = await new Blob([res.data], { type: 'image/png' })
+      const blob = await new Blob([data], { type: 'image/png' })
       // console.log(blob)
       this.imgURL = URL.createObjectURL(blob)
     }

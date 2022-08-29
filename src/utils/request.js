@@ -9,6 +9,14 @@ service.interceptors.request.use((config) => {
   return config
 })
 // 响应拦截器
-service.interceptors.response.use()
+service.interceptors.response.use(
+  (response) => {
+    const { data } = response
+    return data
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
 export default service
