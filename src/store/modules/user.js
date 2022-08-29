@@ -4,7 +4,7 @@ import router from '@/router'
 import { Message } from 'element-ui'
 
 export default {
-  // namespace: true,
+  namespaced: true,
   state: {
     token: getToken()
   },
@@ -24,7 +24,6 @@ export default {
   actions: {
     // 发送登录请求，获取token 在后续中还会用到，所以直接抽取出来
     async loginForm(context, data) {
-      console.log(data)
       // 发送请求获取用户 token
       try {
         const { success, token } = await login(data)
@@ -34,6 +33,7 @@ export default {
           router.push('/')
         } else return this.$message.error('登录失败！')
       } catch (error) {
+        this.$message.error('登录失败！')
         console.log(error)
       }
     }

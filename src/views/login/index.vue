@@ -152,16 +152,11 @@ export default {
     async handleLogin() {
       try {
         await this.$refs.loginForm.validate()
-        await this.$store.dispatch('loginForm', {
+        await this.$store.dispatch('user/loginForm', {
           ...this.loginForm,
           clientToken: this.clientToken,
           loginType: 0
         })
-        // const { success } = await login()
-        // if (success) {
-        //   this.$message.success('登录成功！')
-        //   this.$router.push('/')
-        // } else return this.$message.error('登录失败！')
       } catch (error) {
         this.$message.error('登陆失败！')
         console.log(error)
