@@ -1,10 +1,7 @@
-// import request from '@/utils/request'
+import request from '@/utils/request'
 
-export function login(data) {
-}
-
-export function getInfo(token) {
-}
-
-export function logout() {
-}
+// 获取用户基本信息
+export const getUserInfo = (id) =>
+  request({
+    url: '/api/user-service/user/' + id
+  })

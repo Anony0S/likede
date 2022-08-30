@@ -6,12 +6,15 @@ import store from './store'
 // 设置白名单
 const writeList = ['/login', '/404']
 // 路由前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   if (store.getters.token) {
+    if (!store.getters.userId) {
+      await store.dispatch('user/getUserInfo', store.getters.id)
+    }
     if (to.path === '/login') next('/')
     next()
   } else {
     if (writeList.includes(to.path)) next()
-    next('/login')
+    else next('/login')
   }
 })

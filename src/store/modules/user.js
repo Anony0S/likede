@@ -2,11 +2,14 @@ import { login } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router from '@/router'
 import { Message } from 'element-ui'
+import { getUserInfo } from '@/api/user'
 
 export default {
   namespaced: true,
   state: {
-    token: getToken()
+    token: getToken(),
+    userInfo: {},
+    userId: ''
   },
   mutations: {
     setToken(state, token) {
@@ -19,6 +22,18 @@ export default {
       // 清除 vuex 和本地的 token
       state.token = null
       removeToken()
+    },
+    //  设置用户信息
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
+    },
+    // 删除用户信息
+    removeUserInfo(state) {
+      state.userInfo = {}
+    },
+    // 设置 userId
+    setUserId(state, userId) {
+      state.userId = userId
     }
   },
   actions: {
@@ -26,9 +41,11 @@ export default {
     async loginForm(context, data) {
       // 发送请求获取用户 token
       try {
-        const { success, token } = await login(data)
+        const { success, token, userId } = await login(data)
         if (success) {
+          console.log(userId)
           context.commit('setToken', token)
+          context.commit('setUserId', userId)
           Message.success('登录成功！')
           router.push('/')
         } else return this.$message.error('登录失败！')
@@ -36,6 +53,16 @@ export default {
         this.$message.error('登录失败！')
         console.log(error)
       }
+    },
+    // TODO: 登出
+    logout() {
+      console.log(111)
+    },
+    // 获取用户信息
+    async getUserInfo(context, id) {
+      const res = await getUserInfo(id)
+      context.commit('setUserInfo', res)
+      return res // 这里返回为后面埋下伏笔
     }
   }
 }

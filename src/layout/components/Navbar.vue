@@ -8,7 +8,7 @@
       <div class="avatar-wrapper">
         <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar">
         <span>欢迎您，admin</span>
-        <span>
+        <span class="exit" @click="logout">
           退出
           <i class="el-icon-caret-bottom" />
         </span>
@@ -23,12 +23,9 @@ import { mapGetters } from 'vuex'
 export default {
   components: {},
   computed: {
-    ...mapGetters(['sidebar', 'avatar'])
+    ...mapGetters(['avatar'])
   },
   methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
-    },
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
@@ -62,6 +59,10 @@ export default {
 
     span {
       margin-right: 20px;
+    }
+    .exit {
+      cursor: pointer;
+      user-select: none;
     }
   }
 }

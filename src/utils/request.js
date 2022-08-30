@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '@/store'
 // 创建实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -6,6 +7,9 @@ const service = axios.create({
 })
 // 请求拦截器
 service.interceptors.request.use((config) => {
+  if (store.getters.token) {
+    config.headers['Authorization'] = `${store.getters.token}`
+  }
   return config
 })
 // 响应拦截器
