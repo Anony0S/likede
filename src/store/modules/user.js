@@ -32,8 +32,8 @@ export default {
       state.userInfo = {}
     },
     // 设置 userId
-    setUserId(state, userId) {
-      state.userId = userId
+    setUserId(state) {
+      state.userId = state.userInfo.userId
     }
   },
   actions: {
@@ -59,8 +59,8 @@ export default {
       console.log(111)
     },
     // 获取用户信息
-    async getUserInfo(context, id) {
-      const res = await getUserInfo(id)
+    async getUserInfo({ context, rootState }) {
+      const res = await getUserInfo(rootState.userId)
       context.commit('setUserInfo', res)
       return res // 这里返回为后面埋下伏笔
     }

@@ -6,7 +6,11 @@
     >
     <div class="right-menu">
       <div class="avatar-wrapper">
-        <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar">
+        <img
+          v-imgerror="require('@/assets/common/avatar.png')"
+          :src="avatar"
+          class="user-avatar"
+        >
         <span>欢迎您，admin</span>
         <span class="exit" @click="logout">
           退出
